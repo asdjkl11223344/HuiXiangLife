@@ -404,5 +404,5 @@ mvn test
 ## 项目状态
 
 当前项目已具备完整的前后端代码结构、数据库初始化脚本、一键 Docker Compose 环境、CI/CD 基础流水线和 Prometheus/Grafana 监控配置，适合作为本地生活平台、Java 后端实习项目或全栈练习项目继续扩展。
-   
- 
+ 
+
