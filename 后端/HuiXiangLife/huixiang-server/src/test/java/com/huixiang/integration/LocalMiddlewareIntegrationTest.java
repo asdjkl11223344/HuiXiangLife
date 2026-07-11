@@ -7,6 +7,7 @@ import com.huixiang.service.SeckillService;
 import com.huixiang.service.impl.SeckillServiceImpl;
 import com.huixiang.vo.SeckillResultVO;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -39,6 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+@Disabled("Skip integration tests in CI environment as it requires external middleware")
 class LocalMiddlewareIntegrationTest {
 
     private static final AppDevConfig CONFIG = AppDevConfig.load();
