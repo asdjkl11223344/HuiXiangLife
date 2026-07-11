@@ -1,0 +1,4574 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "惠享生活接口文档",
+    "description": "面向 Apifox 导入的全项目规划版接口文档。按 admin、user、notify 三类入口划分，接口名使用中文，便于你后续直接对齐前后端开发。",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "本地开发环境"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Admin-用户管理"
+    },
+    {
+      "name": "Admin-商户分类"
+    },
+    {
+      "name": "Admin-商户管理"
+    },
+    {
+      "name": "Admin-商品管理"
+    },
+    {
+      "name": "Admin-优惠券模板"
+    },
+    {
+      "name": "Admin-订单管理"
+    },
+    {
+      "name": "Admin-评价管理"
+    },
+    {
+      "name": "Admin-认证"
+    },
+    {
+      "name": "User-认证"
+    },
+    {
+      "name": "User-商户"
+    },
+    {
+      "name": "User-商品"
+    },
+    {
+      "name": "User-优惠券"
+    },
+    {
+      "name": "User-订单"
+    },
+    {
+      "name": "User-评价"
+    },
+    {
+      "name": "User-收藏"
+    },
+    {
+      "name": "Notify-支付通知"
+    },
+    {
+      "name": "Notify-MQ通知"
+    },
+    {
+      "name": "Admin-操作日志"
+    }
+  ],
+  "paths": {
+    "/admin/user/page": {
+      "get": {
+        "tags": [
+          "Admin-用户管理"
+        ],
+        "summary": "分页查询用户",
+        "operationId": "adminUserPage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "description": "手机号或昵称关键字",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "用户角色",
+            "schema": {
+              "type": "string",
+              "example": "USER"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "状态：1正常 0禁用",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageUserInfoVO"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          }
+        }
+      }
+    },
+    "/admin/user/{id}": {
+      "get": {
+        "tags": [
+          "Admin-用户管理"
+        ],
+        "summary": "查询用户详情",
+        "operationId": "adminUserDetail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "用户ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoVO"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/user/{id}/status": {
+      "put": {
+        "tags": [
+          "Admin-用户管理"
+        ],
+        "summary": "修改用户状态",
+        "operationId": "adminUserUpdateStatus",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "用户ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/admin/merchant-category/list": {
+      "get": {
+        "tags": [
+          "Admin-商户分类"
+        ],
+        "summary": "查询商户分类列表",
+        "operationId": "adminMerchantCategoryList",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MerchantCategoryVO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant-category": {
+      "post": {
+        "tags": [
+          "Admin-商户分类"
+        ],
+        "summary": "新增商户分类",
+        "operationId": "adminMerchantCategoryCreate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantCategoryCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新增成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin-商户分类"
+        ],
+        "summary": "修改商户分类",
+        "operationId": "adminMerchantCategoryUpdate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantCategoryUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant-category/{id}": {
+      "delete": {
+        "tags": [
+          "Admin-商户分类"
+        ],
+        "summary": "删除商户分类",
+        "operationId": "adminMerchantCategoryDelete",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "分类ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant/page": {
+      "get": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "分页查询商户",
+        "operationId": "adminMerchantPage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "minScore",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "maxAvgPrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageMerchantDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant/{id}": {
+      "get": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "查询商户详情",
+        "operationId": "adminMerchantDetail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDetailVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "删除商户",
+        "operationId": "adminMerchantDelete",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "商户ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant": {
+      "post": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "新增商户",
+        "operationId": "adminMerchantCreate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新增成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "修改商户",
+        "operationId": "adminMerchantUpdate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MerchantUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant/{id}/status": {
+      "put": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "修改商户状态",
+        "operationId": "adminMerchantUpdateStatus",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/product/page": {
+      "get": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "分页查询商品",
+        "operationId": "adminProductPage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "minSalePrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "maxSalePrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageProductDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/product/{id}": {
+      "get": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "查询商品详情",
+        "operationId": "adminProductDetail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetailVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "删除商品",
+        "operationId": "adminProductDelete",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/product": {
+      "post": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "新增商品",
+        "operationId": "adminProductCreate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新增成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "修改商品",
+        "operationId": "adminProductUpdate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/product/{id}/status": {
+      "put": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "修改商品状态",
+        "operationId": "adminProductUpdateStatus",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/coupon-template/page": {
+      "get": {
+        "tags": [
+          "Admin-优惠券模板"
+        ],
+        "summary": "分页查询优惠券模板",
+        "operationId": "adminCouponTemplatePage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageCouponVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/coupon-template/{id}": {
+      "get": {
+        "tags": [
+          "Admin-优惠券模板"
+        ],
+        "summary": "查询优惠券模板详情",
+        "operationId": "adminCouponTemplateDetail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin-优惠券模板"
+        ],
+        "summary": "删除优惠券模板",
+        "description": "仅未被领取过的优惠券模板允许删除；已被领取的模板只能停用。",
+        "operationId": "adminCouponTemplateDelete",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "删除成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/coupon-template": {
+      "post": {
+        "tags": [
+          "Admin-优惠券模板"
+        ],
+        "summary": "新增优惠券模板",
+        "description": "merchantId、productId 如传入则必须存在；同时传入时，商品必须属于该商户。",
+        "operationId": "adminCouponTemplateCreate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "name": "新人立减券",
+                "type": 1,
+                "discountType": 1,
+                "discountValue": 20,
+                "thresholdAmount": 100,
+                "stock": 1000,
+                "limitPerUser": 1,
+                "merchantId": 1001,
+                "productId": 2001,
+                "startTime": "2026-06-19T00:00:00",
+                "endTime": "2026-06-30T23:59:59"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CouponCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "新增成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin-优惠券模板"
+        ],
+        "summary": "修改优惠券模板",
+        "description": "优惠券模板一旦已被用户领取，不允许再修改名称、类型、优惠方式、优惠值、门槛、适用商户和适用商品等核心信息。",
+        "operationId": "adminCouponTemplateUpdate",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "id": 4001,
+                "name": "新人立减券",
+                "type": 1,
+                "discountType": 1,
+                "discountValue": 20,
+                "thresholdAmount": 100,
+                "stock": 1200,
+                "limitPerUser": 1,
+                "merchantId": 1001,
+                "productId": 2001,
+                "startTime": "2026-06-19T00:00:00",
+                "endTime": "2026-06-30T23:59:59"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/CouponUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/coupon-template/{id}/status": {
+      "put": {
+        "tags": [
+          "Admin-优惠券模板"
+        ],
+        "summary": "修改优惠券模板状态",
+        "operationId": "adminCouponTemplateUpdateStatus",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/order/page": {
+      "get": {
+        "tags": [
+          "Admin-订单管理"
+        ],
+        "summary": "分页查询订单",
+        "operationId": "adminOrderPage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "orderNo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "beginCreateTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endCreateTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "beginPayTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endPayTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/order/{id}": {
+      "get": {
+        "tags": [
+          "Admin-订单管理"
+        ],
+        "summary": "查询订单详情",
+        "operationId": "adminOrderDetail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/order/{id}/cancel": {
+      "put": {
+        "tags": [
+          "Admin-订单管理"
+        ],
+        "summary": "后台取消订单",
+        "operationId": "adminOrderCancel",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取消成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/order/{id}/refund": {
+      "post": {
+        "tags": [
+          "Admin-订单管理"
+        ],
+        "summary": "后台发起退款",
+        "operationId": "adminOrderRefund",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminOrderRefundDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "退款申请成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/review/page": {
+      "get": {
+        "tags": [
+          "Admin-评价管理"
+        ],
+        "summary": "分页查询评价",
+        "operationId": "adminReviewPage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageReviewVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/review/{id}": {
+      "get": {
+        "tags": [
+          "Admin-评价管理"
+        ],
+        "summary": "查询评价详情",
+        "operationId": "adminReviewDetail",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/review/{id}/status": {
+      "put": {
+        "tags": [
+          "Admin-评价管理"
+        ],
+        "summary": "修改评价状态",
+        "operationId": "adminReviewUpdateStatus",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StatusUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "修改成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/auth/login": {
+      "post": {
+        "tags": [
+          "Admin-认证"
+        ],
+        "summary": "管理端登录",
+        "operationId": "adminLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginVO"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/admin/auth/logout": {
+      "post": {
+        "tags": [
+          "Admin-认证"
+        ],
+        "summary": "管理端退出登录",
+        "operationId": "adminLogout",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "退出成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/auth/me": {
+      "get": {
+        "tags": [
+          "Admin-认证"
+        ],
+        "summary": "获取当前登录管理员信息",
+        "operationId": "adminMe",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/auth/register": {
+      "post": {
+        "tags": [
+          "User-认证"
+        ],
+        "summary": "用户注册",
+        "operationId": "userRegister",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegisterDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "注册成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/user/auth/login": {
+      "post": {
+        "tags": [
+          "User-认证"
+        ],
+        "summary": "用户登录",
+        "operationId": "userLogin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "登录成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginVO"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/user/auth/logout": {
+      "post": {
+        "tags": [
+          "User-认证"
+        ],
+        "summary": "用户退出登录",
+        "operationId": "userLogout",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "退出成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/auth/me": {
+      "get": {
+        "tags": [
+          "User-认证"
+        ],
+        "summary": "获取当前登录用户信息",
+        "operationId": "userMe",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfoVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/merchant/page": {
+      "get": {
+        "tags": [
+          "User-商户"
+        ],
+        "summary": "用户分页查询商户",
+        "operationId": "userMerchantPage",
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageMerchantDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/merchant/{id}": {
+      "get": {
+        "tags": [
+          "User-商户"
+        ],
+        "summary": "用户查询商户详情",
+        "operationId": "userMerchantDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MerchantDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/product/page": {
+      "get": {
+        "tags": [
+          "User-商品"
+        ],
+        "summary": "用户分页查询商品",
+        "operationId": "userProductPage",
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "minSalePrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          {
+            "name": "maxSalePrice",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageProductDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/product/{id}": {
+      "get": {
+        "tags": [
+          "User-商品"
+        ],
+        "summary": "用户查询商品详情",
+        "operationId": "userProductDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/product/recommend": {
+      "get": {
+        "tags": [
+          "User-商品"
+        ],
+        "summary": "查询推荐商品",
+        "operationId": "userProductRecommend",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDetailVO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/coupon/page": {
+      "get": {
+        "tags": [
+          "User-优惠券"
+        ],
+        "summary": "分页查询可领取优惠券",
+        "operationId": "userCouponPage",
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageCouponVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/coupon/receive": {
+      "post": {
+        "tags": [
+          "User-优惠券"
+        ],
+        "summary": "领取优惠券",
+        "operationId": "userCouponReceive",
+        "description": "当前登录用户从 Bearer Token 中解析，无需在请求体中传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CouponReceiveDTO"
+              },
+              "example": {
+                "couponTemplateId": 4001
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "领取成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/coupon/my/page": {
+      "get": {
+        "tags": [
+          "User-优惠券"
+        ],
+        "summary": "分页查询我的优惠券",
+        "operationId": "userMyCouponPage",
+        "description": "当前登录用户从 Bearer Token 中解析，无需传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "example": 10
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "description": "0未使用 1已使用 2已过期"
+            },
+            "example": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageUserCouponVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/order": {
+      "post": {
+        "tags": [
+          "User-订单"
+        ],
+        "summary": "创建订单",
+        "operationId": "userOrderCreate",
+        "description": "当前登录用户从 Bearer Token 中解析，无需在请求体中传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCreateDTO"
+              },
+              "example": {
+                "merchantId": 1001,
+                "productId": 2001,
+                "couponId": 4001,
+                "quantity": 2,
+                "remark": "不要香菜"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/order/page": {
+      "get": {
+        "tags": [
+          "User-订单"
+        ],
+        "summary": "分页查询我的订单",
+        "operationId": "userOrderPage",
+        "description": "当前登录用户从 Bearer Token 中解析，无需传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "example": 10
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 0
+          },
+          {
+            "name": "orderNo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "example": "HX202606170001"
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 1001
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 2001
+          },
+          {
+            "name": "beginCreateTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2026-06-17T00:00:00"
+          },
+          {
+            "name": "endCreateTime",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "example": "2026-06-17T23:59:59"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/order/{id}": {
+      "get": {
+        "tags": [
+          "User-订单"
+        ],
+        "summary": "查询订单详情",
+        "operationId": "userOrderDetail",
+        "description": "只能查询当前登录用户自己的订单。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 5001
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDetailVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/order/{id}/cancel": {
+      "post": {
+        "tags": [
+          "User-订单"
+        ],
+        "summary": "取消订单",
+        "operationId": "userOrderCancel",
+        "description": "只能取消当前登录用户自己的待支付订单。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 5001
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取消成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/order/{id}/pay": {
+      "post": {
+        "tags": [
+          "User-订单"
+        ],
+        "summary": "提交支付",
+        "operationId": "userOrderPay",
+        "description": "当前登录用户从 Bearer Token 中解析，路径中的 id 需与请求体里的 orderId 一致。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 5001
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentCreateDTO"
+              },
+              "example": {
+                "orderId": 5001,
+                "payChannel": "WECHAT"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "支付单创建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentSubmitVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/review": {
+      "post": {
+        "tags": [
+          "User-评价"
+        ],
+        "summary": "提交评价",
+        "operationId": "userReviewCreate",
+        "description": "当前登录用户从 Bearer Token 中解析，无需在请求体中传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewCreateDTO"
+              },
+              "example": {
+                "orderId": 5001,
+                "merchantId": 1001,
+                "productId": 2001,
+                "score": 5,
+                "content": "味道不错，分量足。"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "提交成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/review/page": {
+      "get": {
+        "tags": [
+          "User-评价"
+        ],
+        "summary": "分页查询评价",
+        "operationId": "userReviewPage",
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "merchantId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageReviewVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/favorite": {
+      "post": {
+        "tags": [
+          "User-收藏"
+        ],
+        "summary": "新增收藏",
+        "operationId": "userFavoriteCreate",
+        "description": "当前登录用户从 Bearer Token 中解析，无需在请求体中传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoriteCreateDTO"
+              },
+              "example": {
+                "targetId": 2001,
+                "targetType": 2
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "收藏成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IdResult"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User-收藏"
+        ],
+        "summary": "取消收藏",
+        "operationId": "userFavoriteDelete",
+        "description": "当前登录用户从 Bearer Token 中解析，无需传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "targetId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "example": 2001
+          },
+          {
+            "name": "targetType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "1商户 2商品"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "取消成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/favorite/page": {
+      "get": {
+        "tags": [
+          "User-收藏"
+        ],
+        "summary": "分页查询我的收藏",
+        "operationId": "userFavoritePage",
+        "description": "当前登录用户从 Bearer Token 中解析，无需传 userId。",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "example": 10
+          },
+          {
+            "name": "targetType",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "description": "1商户 2商品"
+            },
+            "example": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageFavoriteVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notify/pay/callback": {
+      "post": {
+        "tags": [
+          "Notify-支付通知"
+        ],
+        "summary": "支付平台回调通知",
+        "operationId": "notifyPayCallback",
+        "description": "用于接收微信支付、支付宝等第三方支付回调。建议按支付渠道做签名校验和幂等处理。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayNotifyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "处理成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotifyAckVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notify/mq/order-timeout": {
+      "post": {
+        "tags": [
+          "Notify-MQ通知"
+        ],
+        "summary": "订单超时消息消费",
+        "description": "bizId 传 orderId。仅待支付订单会被关闭，并回滚库存与优惠券使用状态。",
+        "operationId": "notifyMqOrderTimeout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "messageId": "msg-order-timeout-001",
+                "bizType": "ORDER_TIMEOUT",
+                "bizId": "5001"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/MqNotifyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "消费成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotifyAckVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notify/mq/coupon-expire": {
+      "post": {
+        "tags": [
+          "Notify-MQ通知"
+        ],
+        "summary": "优惠券过期消息消费",
+        "description": "bizId 传 userCouponId。仅未使用且已到期的用户优惠券会被置为已过期；未设置过期时间的优惠券不处理。",
+        "operationId": "notifyMqCouponExpire",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "messageId": "msg-coupon-expire-001",
+                "bizType": "COUPON_EXPIRE",
+                "bizId": "7001"
+              },
+              "schema": {
+                "$ref": "#/components/schemas/MqNotifyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "消费成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotifyAckVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notify/mq/order-status-sync": {
+      "post": {
+        "tags": [
+          "Notify-MQ通知"
+        ],
+        "summary": "订单状态同步消息消费",
+        "description": "bizId 传 orderId。当前实现仅在 payload.targetStatus 明确传入 3 时，将已支付订单同步为已完成。",
+        "operationId": "notifyMqOrderStatusSync",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "example": {
+                "messageId": "msg-order-sync-001",
+                "bizType": "ORDER_STATUS_SYNC",
+                "bizId": "5001",
+                "payload": {
+                  "targetStatus": 3
+                }
+              },
+              "schema": {
+                "$ref": "#/components/schemas/MqNotifyDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "消费成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotifyAckVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant/{id}/search/sync": {
+      "post": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "同步单个商户搜索索引",
+        "operationId": "adminMerchantSyncSearchIndex",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "商户ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "同步成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/merchant/search/rebuild": {
+      "post": {
+        "tags": [
+          "Admin-商户管理"
+        ],
+        "summary": "全量重建商户搜索索引",
+        "operationId": "adminMerchantRebuildSearchIndex",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "重建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegerResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/product/{id}/search/sync": {
+      "post": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "同步单个商品搜索索引",
+        "operationId": "adminProductSyncSearchIndex",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "商品ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "同步成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BooleanResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/product/search/rebuild": {
+      "post": {
+        "tags": [
+          "Admin-商品管理"
+        ],
+        "summary": "全量重建商品搜索索引",
+        "operationId": "adminProductRebuildSearchIndex",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "重建成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntegerResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/operation-log/page": {
+      "get": {
+        "tags": [
+          "Admin-操作日志"
+        ],
+        "summary": "分页查询操作日志",
+        "operationId": "adminOperationLogPage",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "pageNo",
+            "in": "query",
+            "description": "页码",
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "每页条数",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "description": "操作人ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "module",
+            "in": "query",
+            "description": "操作模块",
+            "schema": {
+              "type": "string",
+              "example": "商户管理"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "description": "操作动作",
+            "schema": {
+              "type": "string",
+              "example": "同步搜索索引"
+            }
+          },
+          {
+            "name": "bizId",
+            "in": "query",
+            "description": "业务ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "查询成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageOperationLogVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "请求参数错误",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "未登录或令牌失效",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "资源不存在",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "服务器异常",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "请求参数错误"
+          },
+          "traceId": {
+            "type": "string",
+            "example": "c0a80101-20260611-0001"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "BooleanResult": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "操作成功"
+          }
+        }
+      },
+      "IdResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1943278456123456789
+          },
+          "message": {
+            "type": "string",
+            "example": "创建成功"
+          }
+        }
+      },
+      "StatusUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "状态值，具体含义由业务决定",
+            "example": 1
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "PageMeta": {
+        "type": "object",
+        "properties": {
+          "current": {
+            "type": "integer",
+            "example": 1
+          },
+          "size": {
+            "type": "integer",
+            "example": 10
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "example": 125
+          },
+          "pages": {
+            "type": "integer",
+            "format": "int64",
+            "example": 13
+          }
+        }
+      },
+      "UserLoginDTO": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          }
+        },
+        "required": [
+          "phone",
+          "password"
+        ]
+      },
+      "UserRegisterDTO": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "password": {
+            "type": "string",
+            "example": "123456"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "测试用户"
+          },
+          "avatar": {
+            "type": "string",
+            "example": "https://example.com/avatar.png"
+          }
+        },
+        "required": [
+          "phone",
+          "password",
+          "nickname"
+        ]
+      },
+      "MerchantCreateDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "川味小馆"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://example.com/merchant-cover.jpg"
+          },
+          "address": {
+            "type": "string",
+            "example": "长沙市岳麓区麓谷街道 100 号"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0731-12345678"
+          },
+          "description": {
+            "type": "string",
+            "example": "主打湘菜和特色小炒"
+          },
+          "avgPrice": {
+            "type": "number",
+            "format": "double",
+            "example": 38.5
+          }
+        },
+        "required": [
+          "name",
+          "categoryId",
+          "address"
+        ]
+      },
+      "MerchantUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "name": {
+            "type": "string",
+            "example": "川味小馆旗舰店"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "coverUrl": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "avgPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "ProductCreateDTO": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "name": {
+            "type": "string",
+            "example": "双人餐套餐"
+          },
+          "subTitle": {
+            "type": "string",
+            "example": "限时抢购"
+          },
+          "content": {
+            "type": "string",
+            "example": "包含 2 荤 2 素菜 2 饮料"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://example.com/product-cover.jpg"
+          },
+          "originPrice": {
+            "type": "number",
+            "format": "double",
+            "example": 128
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double",
+            "example": 88
+          },
+          "stock": {
+            "type": "integer",
+            "example": 200
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-11T10:00:00"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-12-31T23:59:59"
+          }
+        },
+        "required": [
+          "merchantId",
+          "name",
+          "originPrice",
+          "salePrice",
+          "stock"
+        ]
+      },
+      "ProductUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "subTitle": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "coverUrl": {
+            "type": "string"
+          },
+          "originPrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "stock": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "integer"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "OrderCreateDTO": {
+        "type": "object",
+        "properties": {
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "couponId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4001
+          },
+          "quantity": {
+            "type": "integer",
+            "example": 2
+          },
+          "remark": {
+            "type": "string",
+            "example": "不要香菜"
+          }
+        },
+        "required": [
+          "merchantId",
+          "productId",
+          "quantity"
+        ]
+      },
+      "CouponReceiveDTO": {
+        "type": "object",
+        "properties": {
+          "couponTemplateId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4001
+          }
+        },
+        "required": [
+          "couponTemplateId"
+        ]
+      },
+      "ReviewCreateDTO": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5001
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "score": {
+            "type": "integer",
+            "example": 5
+          },
+          "content": {
+            "type": "string",
+            "example": "味道不错，分量足。"
+          }
+        },
+        "required": [
+          "orderId",
+          "merchantId",
+          "productId",
+          "score"
+        ]
+      },
+      "PaymentCreateDTO": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5001
+          },
+          "payChannel": {
+            "type": "string",
+            "example": "WECHAT"
+          }
+        },
+        "required": [
+          "orderId",
+          "payChannel"
+        ]
+      },
+      "FavoriteCreateDTO": {
+        "type": "object",
+        "properties": {
+          "targetId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "targetType": {
+            "type": "integer",
+            "example": 2,
+            "description": "1商户 2商品"
+          }
+        },
+        "required": [
+          "targetId",
+          "targetType"
+        ]
+      },
+      "MerchantCategoryCreateDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "火锅"
+          },
+          "sort": {
+            "type": "integer",
+            "example": 10
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "MerchantCategoryUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "烧烤"
+          },
+          "sort": {
+            "type": "integer",
+            "example": 20
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "CouponCreateDTO": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "新人立减券"
+          },
+          "type": {
+            "type": "integer",
+            "example": 1,
+            "description": "1平台券 2商户券"
+          },
+          "discountType": {
+            "type": "integer",
+            "example": 1,
+            "description": "1满减 2折扣"
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double",
+            "example": 20
+          },
+          "thresholdAmount": {
+            "type": "number",
+            "format": "double",
+            "example": 100
+          },
+          "stock": {
+            "type": "integer",
+            "example": 1000
+          },
+          "limitPerUser": {
+            "type": "integer",
+            "example": 1
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001,
+            "description": "可选，传入时必须存在"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001,
+            "description": "可选，传入时必须存在；如同时传 merchantId，则商品必须属于该商户"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-19T00:00:00"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-30T23:59:59"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "discountType",
+          "discountValue",
+          "thresholdAmount",
+          "stock",
+          "limitPerUser",
+          "startTime",
+          "endTime"
+        ]
+      },
+      "CouponUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4001
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "integer"
+          },
+          "discountType": {
+            "type": "integer"
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "thresholdAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "stock": {
+            "type": "integer"
+          },
+          "limitPerUser": {
+            "type": "integer"
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "可选，传入时必须存在"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64",
+            "description": "可选，传入时必须存在；如同时传 merchantId，则商品必须属于该商户"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-19T00:00:00"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-30T23:59:59"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "discountType",
+          "discountValue",
+          "thresholdAmount",
+          "stock",
+          "limitPerUser",
+          "startTime",
+          "endTime"
+        ]
+      },
+      "AdminOrderRefundDTO": {
+        "type": "object",
+        "properties": {
+          "refundAmount": {
+            "type": "number",
+            "format": "double",
+            "example": 88
+          },
+          "reason": {
+            "type": "string",
+            "example": "商户无法履约"
+          }
+        },
+        "required": [
+          "refundAmount",
+          "reason"
+        ]
+      },
+      "PayNotifyDTO": {
+        "type": "object",
+        "properties": {
+          "payChannel": {
+            "type": "string",
+            "example": "WECHAT"
+          },
+          "orderNo": {
+            "type": "string",
+            "example": "HX202606110001"
+          },
+          "transactionNo": {
+            "type": "string",
+            "example": "4200002567202606111234567890"
+          },
+          "payStatus": {
+            "type": "integer",
+            "example": 1,
+            "description": "1支付成功 2支付失败"
+          },
+          "payTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "callbackContent": {
+            "type": "string",
+            "example": "{\"trade_state\":\"SUCCESS\"}"
+          },
+          "sign": {
+            "type": "string",
+            "example": "5F2FDEADBEEF"
+          }
+        },
+        "required": [
+          "payChannel",
+          "orderNo",
+          "transactionNo",
+          "payStatus"
+        ]
+      },
+      "MqNotifyDTO": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "example": "msg-20260611-0001"
+          },
+          "bizType": {
+            "type": "string",
+            "example": "ORDER_TIMEOUT"
+          },
+          "bizId": {
+            "type": "string",
+            "example": "5001"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true,
+            "example": {
+              "targetStatus": 3
+            }
+          }
+        },
+        "required": [
+          "messageId",
+          "bizType",
+          "bizId"
+        ]
+      },
+      "NotifyAckVO": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "ok"
+          }
+        }
+      },
+      "LoginVO": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiJ9.demo-token"
+          },
+          "tokenType": {
+            "type": "string",
+            "example": "Bearer"
+          },
+          "expireIn": {
+            "type": "integer",
+            "example": 7200
+          },
+          "userInfo": {
+            "$ref": "#/components/schemas/UserInfoVO"
+          }
+        }
+      },
+      "PaymentSubmitVO": {
+        "type": "object",
+        "properties": {
+          "paymentId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 6001
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5001
+          },
+          "payChannel": {
+            "type": "string",
+            "example": "WECHAT"
+          },
+          "payStatus": {
+            "type": "integer",
+            "example": 0,
+            "description": "0待支付 1已支付"
+          },
+          "payUrl": {
+            "type": "string",
+            "example": "https://pay.example.com/prepay/abc123"
+          }
+        }
+      },
+      "MerchantCategoryVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "火锅"
+          },
+          "sort": {
+            "type": "integer",
+            "example": 10
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "UserInfoVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3001
+          },
+          "phone": {
+            "type": "string",
+            "example": "13800138000"
+          },
+          "nickname": {
+            "type": "string",
+            "example": "测试用户"
+          },
+          "avatar": {
+            "type": "string",
+            "example": "https://example.com/avatar.png"
+          },
+          "role": {
+            "type": "string",
+            "example": "USER"
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          },
+          "lastLoginTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-11T18:20:00"
+          }
+        }
+      },
+      "MerchantDetailVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "name": {
+            "type": "string",
+            "example": "川味小馆"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "categoryName": {
+            "type": "string",
+            "example": "川湘菜"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://example.com/merchant-cover.jpg"
+          },
+          "address": {
+            "type": "string",
+            "example": "长沙市岳麓区麓谷街道 100 号"
+          },
+          "phone": {
+            "type": "string",
+            "example": "0731-12345678"
+          },
+          "description": {
+            "type": "string",
+            "example": "主打湘菜和特色小炒"
+          },
+          "score": {
+            "type": "number",
+            "format": "double",
+            "example": 4.8
+          },
+          "avgPrice": {
+            "type": "number",
+            "format": "double",
+            "example": 38.5
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "ProductDetailVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "merchantName": {
+            "type": "string",
+            "example": "川味小馆"
+          },
+          "name": {
+            "type": "string",
+            "example": "双人餐套餐"
+          },
+          "subTitle": {
+            "type": "string",
+            "example": "限时抢购"
+          },
+          "content": {
+            "type": "string",
+            "example": "包含 2 荤 2 素菜 2 饮料"
+          },
+          "coverUrl": {
+            "type": "string",
+            "example": "https://example.com/product-cover.jpg"
+          },
+          "originPrice": {
+            "type": "number",
+            "format": "double",
+            "example": 128
+          },
+          "salePrice": {
+            "type": "number",
+            "format": "double",
+            "example": 88
+          },
+          "stock": {
+            "type": "integer",
+            "example": 200
+          },
+          "soldCount": {
+            "type": "integer",
+            "example": 36
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CouponVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4001
+          },
+          "name": {
+            "type": "string",
+            "example": "新人立减券"
+          },
+          "type": {
+            "type": "integer",
+            "example": 1
+          },
+          "discountType": {
+            "type": "integer",
+            "example": 1
+          },
+          "discountValue": {
+            "type": "number",
+            "format": "double",
+            "example": 20
+          },
+          "thresholdAmount": {
+            "type": "number",
+            "format": "double",
+            "example": 100
+          },
+          "stock": {
+            "type": "integer",
+            "example": 1000
+          },
+          "limitPerUser": {
+            "type": "integer",
+            "example": 1
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UserCouponVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 7001
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3001
+          },
+          "couponTemplateId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4001
+          },
+          "couponName": {
+            "type": "string",
+            "example": "新人立减券"
+          },
+          "status": {
+            "type": "integer",
+            "example": 0,
+            "description": "0未使用 1已使用 2已过期"
+          },
+          "receiveTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "useTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expireTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "OrderDetailVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5001
+          },
+          "orderNo": {
+            "type": "string",
+            "example": "HX202606110001"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3001
+          },
+          "userNickname": {
+            "type": "string",
+            "example": "测试用户"
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "merchantName": {
+            "type": "string",
+            "example": "川味小馆"
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "productName": {
+            "type": "string",
+            "example": "双人餐套餐"
+          },
+          "couponId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4001
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "double",
+            "example": 176
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double",
+            "example": 20
+          },
+          "payAmount": {
+            "type": "number",
+            "format": "double",
+            "example": 156
+          },
+          "status": {
+            "type": "integer",
+            "example": 1,
+            "description": "0待支付 1已支付 2已完成 3已取消 4已退款"
+          },
+          "remark": {
+            "type": "string",
+            "example": "不要香菜"
+          },
+          "payTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cancelTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ReviewVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 8001
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5001
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3001
+          },
+          "userNickname": {
+            "type": "string",
+            "example": "测试用户"
+          },
+          "userAvatar": {
+            "type": "string",
+            "example": "https://example.com/avatar.png"
+          },
+          "merchantId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1001
+          },
+          "productId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "score": {
+            "type": "integer",
+            "example": 5
+          },
+          "content": {
+            "type": "string",
+            "example": "味道不错，分量足。"
+          },
+          "status": {
+            "type": "integer",
+            "example": 1
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FavoriteVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 9001
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3001
+          },
+          "targetId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2001
+          },
+          "targetType": {
+            "type": "integer",
+            "example": 2
+          },
+          "targetName": {
+            "type": "string",
+            "example": "双人餐套餐"
+          },
+          "targetCoverUrl": {
+            "type": "string",
+            "example": "https://example.com/product-cover.jpg"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PageUserInfoVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserInfoVO"
+            }
+          }
+        }
+      },
+      "PageMerchantDetailVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MerchantDetailVO"
+            }
+          }
+        }
+      },
+      "PageProductDetailVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductDetailVO"
+            }
+          }
+        }
+      },
+      "PageCouponVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CouponVO"
+            }
+          }
+        }
+      },
+      "PageUserCouponVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserCouponVO"
+            }
+          }
+        }
+      },
+      "PageOrderDetailVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetailVO"
+            }
+          }
+        }
+      },
+      "PageReviewVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewVO"
+            }
+          }
+        }
+      },
+      "PageFavoriteVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FavoriteVO"
+            }
+          }
+        }
+      },
+      "IntegerResult": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "integer",
+            "example": 2
+          },
+          "code": {
+            "type": "integer",
+            "example": 1
+          },
+          "msg": {
+            "type": "string",
+            "example": "success"
+          }
+        }
+      },
+      "OperationLogQuery": {
+        "type": "object",
+        "properties": {
+          "pageNo": {
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "default": 10,
+            "minimum": 1,
+            "maximum": 100
+          },
+          "operatorId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "module": {
+            "type": "string",
+            "example": "商户管理"
+          },
+          "action": {
+            "type": "string",
+            "example": "同步搜索索引"
+          },
+          "bizId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1002
+          }
+        }
+      },
+      "OperationLogVO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 2070352969189605378
+          },
+          "operatorId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "operatorName": {
+            "type": "string",
+            "example": "管理员A"
+          },
+          "module": {
+            "type": "string",
+            "example": "商户管理"
+          },
+          "action": {
+            "type": "string",
+            "example": "同步搜索索引"
+          },
+          "bizId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1002
+          },
+          "detail": {
+            "type": "string",
+            "example": "POST /admin/merchant/1002/search/sync -> AdminMerchantController#syncSearchIndex"
+          },
+          "ip": {
+            "type": "string",
+            "example": "127.0.0.1"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-06-26T11:46:27"
+          }
+        }
+      },
+      "PageOperationLogVO": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OperationLogVO"
+            }
+          }
+        }
+      }
+    }
+  }
+}

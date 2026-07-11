@@ -1,0 +1,96 @@
+﻿server:
+  port: 8080
+
+spring:
+  application:
+    name: huixiang-server
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:huixiang_life}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:huixiang}
+    password: ${MYSQL_PASSWORD:huixiang123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:1}
+      timeout: 5000ms
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:huixiang}
+    password: ${RABBITMQ_PASSWORD:huixiang123}
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS:http://elasticsearch:9200}
+    connection-timeout: 5s
+    socket-timeout: 30s
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.huixiang
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    root: info
+    com.huixiang: info
+    org.springframework.amqp: info
+    org.springframework.data.elasticsearch: info
+
+huixiang:
+  jwt:
+    admin-secret-key: ${JWT_ADMIN_SECRET:huixianglife-admin-secret-key-2026-abcdef}
+    admin-ttl: ${JWT_ADMIN_TTL:7200000}
+    admin-token-name: Authorization
+    user-secret-key: ${JWT_USER_SECRET:huixianglife-user-secret-key-2026-abcdef}
+    user-ttl: ${JWT_USER_TTL:7200000}
+    user-token-name: Authorization
+  seckill:
+    preheat:
+      enabled: true
+      advance-minutes: 30
+      fixed-delay-millis: 60000

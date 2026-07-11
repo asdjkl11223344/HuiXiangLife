@@ -1,0 +1,64 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/huixiang_life?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 112233
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 1
+      timeout: 5000ms
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 1
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000ms
+
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 30s
+
+logging:
+  level:
+    root: info
+    com.huixiang: debug
+    org.springframework.jdbc.core: debug
+    org.springframework.amqp: info
+    org.springframework.data.elasticsearch: info
+
+huixiang:
+  jwt:
+    admin-secret-key: huixianglife-admin-secret-key-2026-abcdef
+    admin-ttl: 7200000
+    admin-token-name: Authorization
+
+    user-secret-key: huixianglife-user-secret-key-2026-abcdef
+    user-ttl: 7200000
+    user-token-name: Authorization
+  seckill:
+    preheat:
+      enabled: true
+      advance-minutes: 30
+      fixed-delay-millis: 60000
