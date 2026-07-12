@@ -17,3 +17,16 @@ logs/
 # Temp files
 tmp/
 temp/
+
+# Frontend dependencies and build outputs
+前端/node_modules/
+前端/dist/
+前端/dist-ssr/
+前端/*.local
+
+# Backend build outputs
+后端/HuiXiangLife/**/target/
+
+# Runtime and local files
+*.pid
+*.tmp

@@ -105,7 +105,61 @@
         └── pom.xml
 ```
 
-## 一键启动
+## 快速开始
+
+适合第一次从 GitHub 克隆项目后直接运行完整环境。
+
+### 1. 克隆项目
+
+```powershell
+git clone <你的仓库地址>
+cd <项目目录>
+```
+
+### 2. 启动 Docker Desktop
+
+启动前请确认 Docker Desktop 已经正常运行。
+
+### 3. 一键启动
+
+```powershell
+docker compose up -d --build
+```
+
+首次启动会下载基础镜像、构建前后端镜像并初始化数据库，耗时会比较久。启动完成后查看状态：
+
+```powershell
+docker compose ps
+```
+
+看到 `backend`、`frontend`、`mysql`、`redis`、`rabbitmq`、`elasticsearch` 等服务为 `Up` 或 `healthy` 即表示启动成功。
+
+常用入口：
+
+```text
+用户端：http://localhost/user
+管理端：http://localhost/login
+```
+
+后续只是重新启动项目时，通常执行：
+
+```powershell
+docker compose up -d
+```
+
+修改代码、Dockerfile、Nginx 配置或依赖后，再执行：
+
+```powershell
+docker compose up -d --build
+```
+
+停止项目：
+
+```powershell
+docker compose down
+```
+
+## Docker Compose 一键环境
 
 已提供 Docker Compose 环境，包含前端、后端、MySQL、Redis、RabbitMQ、Elasticsearch、Prometheus、Grafana。
 
@@ -155,6 +209,49 @@ docker compose down
 ```
 
 > `docker compose down` 会停止并移除容器，但不会删除数据卷。需要清空数据库、Redis 等持久化数据时，请手动确认后再处理 Docker volume。
+
+### 常见问题
+
+#### 端口被占用
+
+如果启动时报 `ports are not available`，说明本机端口已被其他程序占用。可修改 `docker-compose.yml` 中 `ports` 左侧的宿主机端口。
+
+例如 MySQL 当前配置为：
+
+```yaml
+ports:
+  - "3307:3306"
+```
+
+含义是本机用 `localhost:3307` 访问容器内的 MySQL `3306` 端口。右侧容器端口不要随意修改。
+
+#### 数据库没有重新初始化
+
+MySQL 初始化脚本只会在数据卷首次创建时执行。如果修改了 `deploy/mysql/init.sql`，但旧数据卷还在，数据库不会自动重建。需要清空数据时，请先确认数据可以删除，再在 Docker Desktop 中手动删除对应 volume。
+
+#### 访问用户端出现 JSON 错误
+
+前端页面入口是：
+
+```text
+http://localhost/user
+```
+
+不要访问：
+
+```text
+http://localhost:8080/user
+```
+
+`8080` 是后端接口端口，直接访问页面路由会得到后端错误响应。
+
+#### Windows 路径说明
+
+项目目录包含中文路径时，Docker Desktop 通常可以正常运行。如果遇到路径挂载或构建异常，建议把仓库克隆到纯英文路径，例如：
+
+```text
+D:\projects\HuiXiangLife
+```
 
 ## 本地开发环境
 
